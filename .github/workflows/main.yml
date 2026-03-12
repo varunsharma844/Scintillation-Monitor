@@ -1,14 +1,12 @@
 name: Noida-Daily-Check
 
-# This global 'env' at the top is the KEY to stopping the error
+# GLOBAL FORCE - This must be at the very top level
 env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
 on:
   schedule:
-    # Runs at 15:15 IST (NPL Update)
     - cron: '15 9 * * *'    
-    # Runs 20:00, 21:00, 22:00 IST (Noida Peak Window)
     - cron: '30 14,15,16 * * *' 
   workflow_dispatch: 
 
@@ -25,7 +23,6 @@ jobs:
           python-version: '3.10'
           
       - name: Run Monitor
-        # This gives your script the SendGrid key you saved in 'Secrets'
         env:
           SENDGRID_API_KEY: ${{ secrets.SENDGRID_API_KEY }}
         run: |
