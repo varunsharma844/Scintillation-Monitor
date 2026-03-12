@@ -1,14 +1,23 @@
 name: Noida-Daily-Check
 on:
   schedule:
-    - cron: '15 9 * * *'    # Runs at 14:45 IST (After NPL report)
-    - cron: '30 14,15,16 * * *' # Runs every hour during Noida danger window (20:00-22:00 IST)
-  workflow_dispatch:        # Allows you to click a button to run it anytime
+    - cron: '15 9 * * *'    # 14:45 IST
+    - cron: '30 14,15,16 * * *' # 20:00-22:00 IST
+  workflow_dispatch: 
+
 jobs:
   check-weather:
     runs-on: ubuntu-latest
+    env:
+      # This line fixes the warning and forces the use of Node.js 24
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+      SENDGRID_API_KEY: ${{ secrets.SENDGRID_API_KEY }}
     steps:
       - uses: actions/checkout@v4
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
       - name: Run Monitor
         run: |
           pip install requests
