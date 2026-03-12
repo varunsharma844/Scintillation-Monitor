@@ -4,25 +4,24 @@ import os
 
 def run_monitor():
     try:
-        # 1. Fetch Kp-Index from NOAA
         response = requests.get("https://services.swpc.noaa.gov/products/noaa-planetary-k-index.json")
         data = response.json()
         kp = float(data[-1][1])
-        
-        # 2. Setup IST Time (UTC + 5:30)
         ist_now = datetime.datetime.utcnow() + datetime.timedelta(hours=5, minutes=30)
         
-        print(f"--- NOIDA SATELLITE MONITOR ---")
-        print(f"Time: {ist_now.strftime('%Y-%m-%d %H:%M:%S')} IST")
-        print(f"Current Kp Index: {kp}")
-
-        # 3. Threshold Logic
+        # This makes the output much easier to find in the logs
+        print("\n" + "="*45)
+        print(f" NOIDA SATELLITE STATUS: {ist_now.strftime('%d %b %Y | %H:%M')} IST")
+        print("="*45)
+        print(f" CURRENT PLANETARY Kp INDEX: {kp}")
+        
         if kp >= 5.0:
-            print("!!! CRITICAL ALERT: G1+ Storm. Signal drops expected on GSAT-30.")
+            print(" >>> CRITICAL: G1+ Storm. Check GSAT-30/Intelsat links now.")
         elif kp >= 4.0:
-            print("--- WARNING: Moderate activity. Phase jitter likely.")
+            print(" >>> WARNING: High activity. Expect downlink jitter.")
         else:
-            print("Status: Ionosphere is Stable.")
+            print(" >>> STATUS: All signals stable. No action needed.")
+        print("="*45 + "\n")
             
     except Exception as e:
         print(f"Error fetching data: {e}")
