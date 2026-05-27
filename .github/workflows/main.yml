@@ -2,25 +2,24 @@ name: Noida-Daily-Check
 
 on:
   schedule:
-    - cron: '15 9 * * *'    # 14:45 IST
-    - cron: '30 14,15,16 * * *' # 20:00-22:00 IST
-  workflow_dispatch: 
+    - cron: '15 9 * * *'    # 14:45 IST (Afternoon window)
+    - cron: '30 14,15,16 * * *' # 20:00-22:00 IST (Noida Evening danger window)
+  push:
+    branches: [ main ]     # Restart trigger: Wakes up schedule on file update
+  workflow_dispatch:       # Keeps your manual play button active
 
 jobs:
   check-weather:
     runs-on: ubuntu-latest
     steps:
-      # Upgraded from @v4 to @v5 (Native Node 24 support)
       - name: Checkout Code
         uses: actions/checkout@v5
         
-      # Upgraded from @v5 to @v6 (Native Node 24 support)
       - name: Setup Python
         uses: actions/setup-python@v6
         with:
           python-version: '3.10'
           
-      # Run your space weather script
       - name: Run Monitor
         env:
           SENDGRID_API_KEY: ${{ secrets.SENDGRID_API_KEY }}
